@@ -39,7 +39,13 @@ SESSION.headers.update({
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
         "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
     ),
-    "Accept-Language": "ar,en;q=0.8",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "ar,en-US;q=0.9,en;q=0.8",
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-User": "?1",
 })
 
 # ==========================================
@@ -124,6 +130,9 @@ def process_job_post(title, full_url, platform_name):
 
 def fetch_soup(url):
     r = SESSION.get(url, timeout=TIMEOUT)
+    if r.status_code != 200:
+        print(f"{url} -> {r.status_code} server={r.headers.get('server')} "
+              f"cf-mitigated={r.headers.get('cf-mitigated')} body={r.text[:150]!r}")
     r.raise_for_status()
     return BeautifulSoup(r.text, "html.parser")
 
